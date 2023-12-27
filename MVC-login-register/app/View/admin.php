@@ -9,17 +9,17 @@ if(isset($_SESSION['status']) == ""){
 $conf = "SELECT * FROM barang_barang";
 $ngitung = mysqli_query($koneksi,$conf);
 
+
 $jumlahDataPerHal = 8;
 $jumlahData = mysqli_num_rows($ngitung);
 $jumlahHal = ceil($jumlahData / $jumlahDataPerHal);
 $halAktif = (isset($_GET['halaman'])) ? $_GET['halaman'] : 1;
 $awalData = ($jumlahDataPerHal * $halAktif) - $jumlahDataPerHal; 
-
+// $tes = $_GET['namaBarang'];
+// echo $tes;
 
 $query = "SELECT * FROM barang_barang LIMIT $awalData, $jumlahDataPerHal";
 $datas = mysqli_query($koneksi, $query);
-
-
 $i = 0;
 
     
@@ -29,6 +29,7 @@ $i = 0;
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="asset/gambar/hapus-logo-2.png" type="image/x-icon">
     <title>Dasabubu</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -86,7 +87,7 @@ $i = 0;
               <a class="nav-link text-white" href="#">Kontak</a>
             </li>
             <li>
-              <a class="" href="#"><img src="asset/vector/shopping-cart.svg" style="width: 20px;" class="mt-2 me-2 ms-3"></a>
+              <a class="" href="keranjang.php"><img src="asset/vector/shopping-cart.svg" style="width: 20px;" class="mt-2 me-2 ms-3"></a>
             </li>
             <li>
               <a class="" href="#"><img src="asset/vector/message-square.svg" style="width: 20px;" class="mt-2 me-1"></a>
@@ -100,6 +101,7 @@ $i = 0;
               </a>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="#"><b><?php echo $_SESSION['nama']?></b></a></li>
+                <li><a class="dropdown-item" href="tambah.php">Tambah Barang</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="logout.php">Log out</a></li>
               </ul>
@@ -136,9 +138,7 @@ $i = 0;
       </button>
     </div>
 
-<!-- detail barang -->
-<!-- panel admin tampilan -->
-<!-- tambah keranjang -->
+
 
     <h2 class="mt-5 ms-3">Popular</h2>
     
@@ -150,17 +150,21 @@ $i = 0;
           <img src="asset/gambar/<?= $value['gambar']?>" style="width : 302px;height: 180px;" class="card-img-top">
           <div class="card-body">
             <p class="card-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?= $value['nama_barang']?></p>
-            <p class="text-danger fw-regular" style="font-size: 18px;">Rp<?= $value['harga_barang']?></p>
+            <p class="text-danger fw-regular" style="font-size: 18px;">Rp<?= number_format($value['harga_barang'])?></p>
             <p class="fw-semibold opacity-50"><?= $value['kota']?></p>
-            <p class="fw-normal" style="font-size: 16px;"><img src="asset/vector/star.svg" style="margin-top: -3px; width: 20px;"><span class="opacity-50"><?= $value['rate']?></span></p>
-            <input type="submit" class="button" value="CheckOut">
+            <p class="fw-normal" style="font-size: 16px;"><img src="asset/vector/star.svg" style="margin-top: -3px; width: 20px;"><span class="opacity-50"><?= $value['rate']?> | Produk terjual(<?= $value['produk_terjual'] ?>)</span></p>
+            <form action="proses_keranjang.php?Beli=<?= $value['no'] ?>" method="POST">
+            <input type="submit" name="checkout" class="button" value="Tambah Kerajang">
+            </form>
+            <!-- <a href="proses_co.php?nama_barang=<?= $value['no']?>" class="button">CheckOut</a> -->
           </div>
         </div>
       </div>
     </div>
     <?php endforeach; ?>
-  
 
+
+  
     <nav aria-label="Page navigation example">
       <ul class="pagination" style="justify-content: center;">
       <?php if($halAktif > 1) : ?>
@@ -209,6 +213,5 @@ $i = 0;
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script src="js.js"></script>
   </body>
 </html>
